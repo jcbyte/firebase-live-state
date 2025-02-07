@@ -58,8 +58,8 @@ export default function useLiveState<T>(
 
 	/**
 	 * Retrieves the number of path components in a given path.
-	 * @param path The path.
-	 * @returns THe number of path components.
+	 * @param {string} path The path.
+	 * @returns {number} The number of path components.
 	 */
 	function countPathSegments(path: string): number {
 		const normalisedPath = normalisePath(path);
@@ -81,18 +81,25 @@ export default function useLiveState<T>(
 		return deriveRelativeRefPath(ref.parent, [ref.key ?? "", ..._path]);
 	}
 
-	// todo tsdoc
+	/**
+	 * Creates listeners for changes in the Firebase Realtime Database at the given snapshot's path.
+	 * Will ensure that listeners only created once.
+	 * @param {DataSnapshot} snapshot The snapshot at the specific path to create listeners.
+	 */
 	function createListeners(snapshot: DataSnapshot) {
+		// If data does not exist at the path then do not create listeners here
 		if (!snapshot.exists()) return;
 
+		// Find the path for the given snapshot
 		const path = deriveRelativeRefPath(snapshot.ref);
 		const pathKey = joinPathSegments(path);
 
 		// Only create listeners if they do not already exist
 		if (pathKey in listenersRef.current) return;
 
+		// Determine if the snapshot contains an object or a primitive value
 		if (snapshot.hasChildren()) {
-			// This is an object
+			// Add listeners for when children are added or removed from the object
 			const addListener = onChildAdded(snapshot.ref, (snapshot: DataSnapshot) => {
 				handleChildAdded(snapshot, path);
 			});
@@ -100,24 +107,33 @@ export default function useLiveState<T>(
 				handleChildRemoved(snapshot, path);
 			});
 
+			// This will create listeners for the entire object as when an `onChildAdded` lister is created, it immediately executes
+			// the callback for all of its children.
+
 			listenersRef.current[pathKey] = {
 				primitive: false,
 				unsubscribeAdd: addListener,
 				unsubscribeRemove: removeListener,
 			};
 		} else {
+			// Add listeners for when the primitive value changes
 			const changeListener = onValue(snapshot.ref, (snapshot: DataSnapshot) => {
 				handleValueChange(snapshot, path);
 			});
+
 			listenersRef.current[pathKey] = { primitive: true, unsubscribeUpdate: changeListener };
 		}
 	}
 
-	// todo tsdoc
+	/**
+	 * Unsubscribe listeners at a given path.
+	 * @param {string} pathKey The path of the listeners to remove.
+	 */
 	function unsubscribeListeners(pathKey: string) {
 		if (!(pathKey in listenersRef.current)) return;
 
 		const listeners = listenersRef.current[pathKey];
+		// Unsubscribe listeners based on value type
 		if (listeners.primitive) {
 			listeners.unsubscribeUpdate();
 		} else {
@@ -221,12 +237,11 @@ export default function useLiveState<T>(
 			if (!path) return;
 
 			const snapshot: DataSnapshot = await get(ref(db, path));
-			// If d ata does not exist at the path then do not initialise
+			// If data does not exist at the path then do not initialise
 			if (!snapshot.exists()) return;
 
 			setObject(snapshot.val());
-			// This will create listeners for the entire object as when an `onChildAdded` lister is created, it immediately executes
-			// the callback for all of its children.
+			// Create listeners for the entire object
 			createListeners(snapshot);
 		}
 		init();
@@ -234,31 +249,47 @@ export default function useLiveState<T>(
 		pathRef.current = path;
 	}, [db, path]);
 
-	// todo tsdoc
-	const writeChanges = (changes: Difference[]) => {
+	/**
+	 * Applies a batch of changes to the realtime database
+	 * @param {Difference[]} changes Array of differences representing the changes to be applied.
+	 */
+	function writeChanges(changes: Difference[]) {
 		const updates: Record<string, any> = {};
 
+		// For each change create a database update
 		changes.forEach((change) => {
+			// Calculate the realtime database path, remove the first element from path as that will always be [0]
 			const changePath = `${pathRef.current}${joinPathSegments(change.path.slice(1))}`;
 
-			if (change.type === "CREATE" || change.type === "CHANGE") {
-				updates[changePath] = change.value;
-			} else {
+			if (change.type === "REMOVE") {
+				// Setting to `null` will delete from the database
 				updates[changePath] = null;
+			} else {
+				updates[changePath] = change.value;
 			}
 		});
 
+		// Send all updates at once
 		update(ref(db), updates);
-	};
+	}
 
-	// If an empty object is written ({}, []) then the state variable will be updated but not the live database
-	// This shouldn't matter as `diff` will also not pick up on these changes until data is actually written inside this object
-	// todo tsdoc
+	/**
+	 * Update the local state and synchronise changes with the Realtime Database.
+	 * @param {(newObject: T) => T} updater Updater function which receives the current state object and returns the updated object.
+	 */
 	function updateObject(updater: (newObject: T) => T) {
+		// If an empty object ({}, []) is written then the state variable will be updated but not the live database
+		// This shouldn't matter as `diff` will also not pick up on these changes until data is actually written inside this object
+
+		// Update state variable with this change
 		setObject((prev) => {
+			// Calculate the new object by running the updater
 			const newObject = updater(prev as T);
+
+			// Find changes and update the realtime database with them, must pass as objects hence passes as arrays
 			const changes = diff([prev], [newObject]);
 			writeChanges(changes);
+
 			return newObject;
 		});
 	}
