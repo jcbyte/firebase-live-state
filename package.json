@@ -1,6 +1,6 @@
 {
 	"name": "firebase-live-state",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Provides a React hook for synchronising a state variable with a Firebase Realtime Database at a given path.",
 	"author": "Joel Cutler",
 	"license": "MIT",

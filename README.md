@@ -48,11 +48,11 @@ export default function YourComponent() {
 
 The state object will initially be `undefined` until the data at the specified path has been fetched.
 
-The Realtime Database and state variable will stay synchronized. Any changes made to the state or the Firebase Realtime Database will reflect in the other automatically.
+The Realtime Database and state variable will stay synchronized. Any changes made to the state variable or the Firebase Realtime Database will reflect in the other automatically.
 
 ### Limitations
 
-⚠️ **There must already be data in the firebase location to initialise correctly.** Without data, the state will remain `undefined` permanently.
+⚠️ **There must already be data in the Firebase Realtime Database at the given path to initialise correctly.** Without data, the state will remain as `undefined` permanently.
 
 State updates must be done using functional state updates (e.g., `setObj((prev) => {...})`).
 

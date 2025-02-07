@@ -31,7 +31,7 @@ export default function useLiveState<T>(
 ): [T | undefined, (updater: (newObject: T) => T) => void] {
 	// Underlying stateful value
 	const [object, setObject] = useState<T | undefined>(undefined);
-	// Hashmap of all relative paths and there corresponding listeners so we can unsubscribe from them where necessary
+	// Hashmap of all relative paths and their corresponding listeners so we can unsubscribe from them where necessary
 	const listenersRef = useRef<Record<string, Listener>>({});
 
 	// Keep path as a ref in case it is changed from null dynamically.
@@ -83,7 +83,7 @@ export default function useLiveState<T>(
 
 	/**
 	 * Creates listeners for changes in the Firebase Realtime Database at the given snapshot's path.
-	 * Will ensure that listeners only created once.
+	 * Will ensure that listeners are only created once.
 	 * @param {DataSnapshot} snapshot The snapshot at the specific path to create listeners.
 	 */
 	function createListeners(snapshot: DataSnapshot) {
@@ -107,7 +107,7 @@ export default function useLiveState<T>(
 				handleChildRemoved(snapshot, path);
 			});
 
-			// This will create listeners for the entire object as when an `onChildAdded` lister is created, it immediately executes
+			// This will create listeners for the entire object as when an `onChildAdded` listener is created, it immediately executes
 			// the callback for all of its children.
 
 			listenersRef.current[pathKey] = {
@@ -154,7 +154,7 @@ export default function useLiveState<T>(
 
 			// Iterate through the object until we reach the value which was changed
 			path.reduce((objectAt: any, key, index) => {
-				// If the local parent object doest exist yet then temporarily create it to ensure local structure
+				// If the local parent object doesn't exist yet then temporarily create it to ensure local structure
 				// The order of callbacks should ensure this exists but React state setting is asynchronous so this may not be the case
 				if (!(key in objectAt)) {
 					objectAt[key] = {};
@@ -184,7 +184,7 @@ export default function useLiveState<T>(
 
 			// Iterate through the object until we reach the parent object
 			const objectAtPath = path.reduce((objectAt: any, key) => {
-				// If the local parent object doest exist yet then temporarily create it to ensure local structure
+				// If the local parent object doesn't exist yet then temporarily create it to ensure local structure
 				// The order of callbacks should ensure this exists but React state setting is asynchronous so this may not be the case
 				if (!(key in objectAt)) {
 					objectAt[key] = {};
@@ -214,7 +214,7 @@ export default function useLiveState<T>(
 
 			// Iterate through the object until we reach the parent object
 			const objectAtPath = path.reduce((objectAt: any, key) => {
-				return [objectAt[key]];
+				return objectAt[key];
 			}, newObject);
 
 			// Delete the child at the parent
