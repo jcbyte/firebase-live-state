@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "ES2022",
+    "target": "ES6",
+    "lib": ["DOM", "ES6"],
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+  },
+  "include": ["src/**/*"]
+}
