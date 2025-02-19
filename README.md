@@ -58,8 +58,4 @@ State updates must be done using functional state updates (e.g., `setObj((prev) 
 
 ## Licence
 
-MIT Licence
-
-## Authors
-
-- [@jcbyte](https://www.github.com/jcbyte)
+[Apache License 2.0](LICENSE)
