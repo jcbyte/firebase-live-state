@@ -5,7 +5,7 @@ Provides a React hook for synchronising a state variable with a [Firebase Realti
 ## Installation
 
 ```bash
-npm install firebase-live-state
+npm i firebase-live-state
 ```
 
 ## Usage
@@ -52,9 +52,8 @@ The Realtime Database and state variable will stay synchronized. Any changes mad
 
 ### Limitations
 
-⚠️ **There must already be data in the Firebase Realtime Database at the given path to initialise correctly.** Without data, the state will remain as `undefined` permanently.
-
-State updates must be done using functional state updates (e.g., `setObj((prev) => {...})`).
+- ⚠️ **There must already be data in the Firebase Realtime Database at the given path to initialise correctly.** Without data, the state will remain as `undefined` permanently.
+- State updates must be done using functional state updates (e.g., `setObj((prev) => {...})`).
 
 ## Licence
 
