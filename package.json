@@ -1,6 +1,6 @@
 {
 	"name": "@jcbyte/firebase-live-state",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "Provides a React hook for synchronising a state variable with a Firebase Realtime Database at a given path.",
 	"keywords": [
 		"react",

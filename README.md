@@ -27,7 +27,7 @@ const db = getDatabase(firebaseApp);
 Use `useLiveState` to create your synchronised state variable and setter:
 
 ```ts
-import { useLiveState } from "firebase-live-state";
+import { useLiveState } from "@jcbyte/firebase-live-state";
 
 export default function YourComponent() {
 	const [obj, setObj] = useLiveState<T>(db, "/firebase/path");
