@@ -5,7 +5,7 @@ Provides a React hook for synchronising a state variable with a [Firebase Realti
 ## Installation
 
 ```bash
-npm i firebase-live-state
+npm i @jcbyte/firebase-live-state
 ```
 
 ## Usage

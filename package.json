@@ -1,29 +1,32 @@
 {
 	"name": "@jcbyte/firebase-live-state",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Provides a React hook for synchronising a state variable with a Firebase Realtime Database at a given path.",
-	"author": "Joel Cutler",
-	"license": "Apache-2.0",
-	"homepage": "https://github.com/jcbyte/firebase-live-state#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jcbyte/firebase-live-state.git"
-	},
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"scripts": {
-		"build": "tsc",
-		"prepare": "npm run build",
-		"publish:npm": "npm publish --registry=https://registry.npmjs.org",
-		"publish:github": "npm publish --registry=https://npm.pkg.github.com --access public",
-		"publish:all": "npm run publish:npm && npm run publish:github"
-	},
 	"keywords": [
 		"react",
 		"firebase",
 		"hooks",
 		"state"
 	],
+	"homepage": "https://github.com/jcbyte/firebase-live-state#readme",
+	"bugs": {
+		"url": "https://github.com/jcbyte/firebase-live-state/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jcbyte/firebase-live-state.git"
+	},
+	"license": "Apache-2.0",
+	"author": "Joel Cutler",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"prepare": "npm run build",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access public",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com --access public",
+		"publish:all": "npm run publish:npm && npm run publish:github"
+	},
 	"dependencies": {
 		"firebase": "^11.2.0",
 		"microdiff": "^1.5.0",
