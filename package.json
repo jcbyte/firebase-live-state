@@ -13,7 +13,10 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc",
-		"prepare": "npm run build"
+		"prepare": "npm run build",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com --access public",
+		"publish:all": "npm run publish:npm && npm run publish:github"
 	},
 	"keywords": [
 		"react",
